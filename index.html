@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Usuarios</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #007bff, #00c6ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 350px;
+    }
+
+    h1 {
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #mensaje {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Registro de Usuarios</h1>
+    <form id="formulario">
+      <input type="text" name="nombre" placeholder="Ingresa tu nombre" required>
+      <input type="email" name="email" placeholder="Ingresa tu correo electrónico" required>
+      <button type="submit">Registrar</button>
+    </form>
+    <div id="mensaje"></div>
+  </div>
+
+  <script>
+    document.getElementById("formulario").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const datos = new FormData(this);
+
+      fetch("insertar.php", {
+        method: "POST",
+        body: datos
+      })
+      .then(res => res.text())
+      .then(data => {
+        if (data === "EXISTE") {
+          document.getElementById("mensaje").innerHTML = "<span style='color:red'>⚠️ Este correo ya está registrado</span>";
+        } else if (data === "OK") {
+          document.getElementById("mensaje").innerHTML = "<span style='color:green'>✅ Usuario registrado correctamente</span>";
+          this.reset();
+        } else {
+          document.getElementById("mensaje").innerHTML = "<span style='color:red'>❌ Error en el registro</span>";
+        }
+      })
+      .catch(() => {
+        document.getElementById("mensaje").innerHTML = "<span style='color:red'>❌ Error al conectar con el servidor</span>";
+      });
+    });
+  </script>
+</body>
+</html>
